@@ -1,0 +1,4 @@
+# make_mocks/MANIFEST.in
+
+recursive-include make_mocks/templates *
+recursive-include make_mocks/filters *

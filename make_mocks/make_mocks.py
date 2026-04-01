@@ -960,7 +960,8 @@ def assign_spectra(mass, metallicity, age, metallicities, ages, spectra,
 
 def make_ifu_cube(X, X_c, mass, metallicity, age, z_fix,
                   velocity=None,
-                  imf='kroupa', wav_range=None, wav_chunk=100,
+                  imf='kroupa', wav_range=None, spectral_resolution=None,
+                  wav_chunk=100,
                   extent=20, pixel_size=1.0, pixel_size_kpc=None,
                   projection='xy',
                   njobs=4, k=5, n_resample=250,
@@ -1010,6 +1011,11 @@ def make_ifu_cube(X, X_c, mass, metallicity, age, z_fix,
     wav_range : (float, float), optional
         Rest-frame wavelength range [Angstrom] to include.  Defaults to the full
         template coverage.  Narrowing this is the fastest way to cut runtime.
+    spectral_resolution : float, optional
+        Output channel width in Angstrom (rest-frame).  When provided, the
+        template is resampled onto a uniform grid with this step via linear
+        interpolation after any ``wav_range`` trimming.  Must be >= the native
+        template sampling.  Default: None (use the native template grid).
     wav_chunk : int
         Wavelength channels processed per iteration.  Tune for memory/speed.
     extent : float
@@ -1089,12 +1095,23 @@ def make_ifu_cube(X, X_c, mass, metallicity, age, z_fix,
         wav  = wav[w_mask]
         spec = spec[:, :, w_mask]
 
+    # Resample to a uniform spectral grid if requested
+    if spectral_resolution is not None:
+        wav_new = np.arange(wav[0], wav[-1] + spectral_resolution, spectral_resolution)
+        n_Z_t, n_a_t, _ = spec.shape
+        spec_flat = spec.reshape(n_Z_t * n_a_t, len(wav))
+        spec_new  = np.array([np.interp(wav_new, wav, row) for row in spec_flat],
+                             dtype=spec.dtype)
+        spec = spec_new.reshape(n_Z_t, n_a_t, len(wav_new))
+        wav  = wav_new
+
     n_lam   = len(wav)
     wav_obs = wav * (1.0 + z_fix)
 
     if verbose:
+        d_wav = np.median(np.diff(wav))
         print(f"    Template : {imf}  |  {n_lam} channels "
-              f"({wav[0]:.0f}-{wav[-1]:.0f} Angstrom rest)  |  "
+              f"({wav[0]:.0f}-{wav[-1]:.0f} Angstrom rest, d_lam={d_wav:.2f} A)  |  "
               f"{len(age_grid)} ages  |  {len(mets)} Z")
 
     # Validate particle inputs

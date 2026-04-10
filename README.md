@@ -122,9 +122,8 @@ imgs_noisy, imgs_clean = mm.make_image(
 
 ## Notes
 
-- **Output units:** All fluxes and images are in AB flux density units at the 10-pc reference distance by default. To convert to observed AB magnitudes, use $m_\mathrm{AB} = -2.5 \log_{10}(f) + \mathrm{distance\ modulus}$, where $f$ is the flux value and the distance modulus is computed for the source redshift.
+- **Output units:** All fluxes and images are in AB flux density units. To convert to observed AB magnitudes, use $m_\mathrm{AB} = -2.5 \log_{10}(f), where $f$ is the flux value.
 - **Redshifting:** SEDs are shifted to the observer frame before filter integration.
 - **Reference distance:** Fluxes are computed at 10 pc, then rescaled to the luminosity distance.
 - **Metallicity:** Use absolute mass fraction (e.g. solar $Z_\odot \approx 0.02$).
 - **IMF/template options:** `'chabrier'` (default), `'salpeter'`, `'kroupa'`.
-- **Parallelism:** Set `njobs` for faster processing on multicore machines.

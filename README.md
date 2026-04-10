@@ -49,9 +49,7 @@ imgs_noisy, imgs_clean = mm.make_image(
 
 For a step-by-step demonstration, see the Jupyter notebook:
 
-- **demo_make_mocks.ipynb** — shows example usage, input preparation, and visualization of outputs.
-
-Open this notebook in JupyterLab or VS Code to explore the workflow interactively.
+- **demo_make_mocks.ipynb** — shows example usage and visualization of outputs.
 
 ---
 

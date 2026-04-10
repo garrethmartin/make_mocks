@@ -6,10 +6,13 @@ Method
 Each particle is assigned a smoothing length equal to the distance to its
 k-th nearest neighbor in 3-D.  Smoothed particles are scattered onto the
 target grid by drawing Gaussian offsets per particle, using the local kNN
-distance as the smoothing scale..
+distance as the smoothing scale.
 
 This implements the adaptive smoothing approach of Merritt et al. 2020
-(https://ui.adsabs.harvard.edu/abs/2020MNRAS.495.4570M).
+(https://ui.adsabs.harvard.edu/abs/2020MNRAS.495.4570M). We use resampling
+rather than direct convolution for better efficiency with large image sizes.
+This approach is therefore an approximation which improves as "n_resample"
+is increased.
 
 Public API
 ----------

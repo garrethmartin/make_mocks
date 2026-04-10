@@ -185,7 +185,6 @@ def _scatter_worker(args):
 
     Each particle is scattered ``n_resample`` times with a 2-D Gaussian of std
     equal to its kNN distance (the natural smoothing length in position units).
-    No sigma grouping or convolution is used.
 
     Parameters (packed into args)
     ------------------------------
@@ -330,6 +329,9 @@ def smooth_3d(
 
     Sparse particles are spread broadly; dense particles are spread narrowly,
     according to the local k-nearest-neighbour density.
+
+    No sigma grouping or convolution is used anymore, but sigma_step and 
+    sigma_min are still included for now (but now ignored).
 
     Parameters
     ----------

@@ -830,8 +830,8 @@ def make_image(X, X_c, mass, metallicity, age, mu_lims=None, psfs=None,
         dist_scale = 10.0 ** (-cosmo.distmod(z_fix).value / 2.5)
         imgs = [img * dist_scale for img in imgs]
 
-    # PSF convolution
-    imgs = [fftconvolve(img, psf, mode='same') for img, psf in zip(imgs, psfs)]
+    # PSF convolution (normalize PSF to conserve flux)
+    imgs = [fftconvolve(img, psf / psf.sum(), mode='same') for img, psf in zip(imgs, psfs)]
 
     imgs_clean = list(imgs)
 
@@ -845,7 +845,7 @@ def make_image(X, X_c, mass, metallicity, age, mu_lims=None, psfs=None,
         imgs_noisy = [
             img + np.random.normal(
                 loc=0.0,
-                scale=(10.0 ** (-0.4 * mu) * pixel_size * 10.0) / 3.0,
+                scale=(10.0 ** (-0.4 * mu) * pixel_size) / 30.0,
                 size=img.shape,
             )
             for img, mu in zip(imgs, mu_lims)
